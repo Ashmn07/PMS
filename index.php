@@ -79,7 +79,7 @@ else{
         <a href="/" class="ui item">
         <h4>Login</h4>
         </a>
-        <a href="login1.html" class="ui item">
+        <a href="signup.html" class="ui item">
         <h4>Signup</h4>
         </a>
     </div>
