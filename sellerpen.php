@@ -139,76 +139,47 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
-$sessEmail = $_SESSION["user_email"];
-$query1 = "SELECT * FROM seller WHERE Seller_Email='$sessEmail'";
-  $result = mysqli_query($conn,$query1);
-	$count  = mysqli_num_rows($result);
-  if($count==0){
-    $verify_err_mess="Invalid Email / Password";
-  }
-  else{
-    while($row = $result->fetch_assoc()) {
-      $tableId =  $row["Seller_ID"];
-      $name = $row["Seller_Name"];
-  }
-  $_SESSION["user_id"] = $tableId;
-  $_SESSION["user_name"] = $name;
-  // echo "$tableId";
-  $query2 = "SELECT * FROM seller_medicines WHERE S_ID='$tableId'";
-  $result = mysqli_query($conn, $query2);
-  $count = 1;
-  echo "
-    <table class='ui celled table'>
-      <thead>
-        <tr>
-          <th>SNO</th>
-          <th>MEDICINE</th>
-          <th>MEDICINE STOCK</th>
-          <th>PRICE PER QUANTITY</th>
-        </tr>
-      </thead>
-      <tbody>
-     ";
-     while($row = mysqli_fetch_array($result)){
-      echo "
-        <tr>
-          <td>" . $count . "</td>
-          <td>" . $row['Mname'] . "</td>
-          <td>" . $row['Mquantity'] . "</td>
-          <td>" . $row['PPQ'] . "</td>
-        </tr>";
-        $count++;
-  }
+$id = $_SESSION['user_id'];
+$query = "SELECT * FROM temp_purchase_order WHERE S_ID='$id'";
+$result = mysqli_query($conn, $query);
+$sno=1;
 echo "
+<table class='ui celled table'>
+  <thead>
+    <tr>
+      <th>SNO</th>
+      <th>MEDICINE NAME</th>
+      <th>QUANTITY</th>
+      <th>AMOUNT</th>
+      <th>PAY_MODE</th>
+      <th>NO OF DAYS</th>
+      <th>APPROVE</th>
+    </tr>
+  </thead>
+  <tbody>
+ ";
+ while($row = mysqli_fetch_array($result)){
+    echo "
+    <tr>
+    <form method='post' action='approved.php?SName=".$row['SNAME']."&&MName=".$row['MNAME']."&&SID=".$row['S_ID']."&&MQ=".$row['MQUANTITY']."&&AMT=".$row['AMOUNT']."&&PONO=".$row['PO_NO']."&&PAYMODE=".$row['PAY_MODE']."&&BDATE=".$row['BUY_DATE']."'>
+      <td>" . $sno . "</td>
+      <td>" . $row['MNAME'] . "</td>
+      <td>" . $row['MQUANTITY'] . "</td>
+      <td>" . $row['AMOUNT'] . "</td>
+      <td>" . $row['PAY_MODE'] . "</td>
+      <td><input style='width:70%;' min=0 type='number'placeholder='Enter Days' name='days' required></td>
+      <td><button class='ui secondary button' type='submit'>Approve</td>
+      </form>
+    </tr>";
+    $sno++;
+ }
+ echo "
   </tbody>
 </table>";
-}
 $conn->close();
 ?>
 </div>
- <button class="ui fluid button">
-    <a href="newmed.php" style="color:#37414b;">Add New Medicine</a>
-  </button>
 </div>
-<?php
-        if(!empty($verify_err_mess)){
-            echo '<div class="ui negative message" id="errorMsg" style="width:85%;">
-            <i class="close icon" onclick="closeDiv1()"></i>
-            <div class="header">
-              '.$verify_err_mess.'
-            </div>
-            <p>Medicine Details Not Added</p></div>';
-        }
-  ?>
 </div>
-<script>
-  function closeDiv1(){
-    document.getElementById('errorMsg').style.display='None';
-  }
-  function closeDiv2(){
-    document.getElementById('corrMsg').style.display='None';
-  }
-</script>
 </body>
 </html>

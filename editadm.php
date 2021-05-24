@@ -15,8 +15,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $name = $_POST['mn'];
     $newq = $_POST['q'];
     $newppq = $_POST['ppq'];
-    $id = $_SESSION["user_id"];
-    $query="SELECT * FROM seller_medicines WHERE S_ID ='$id' AND MName='$name'";
+    $query="SELECT * FROM medicine_inventory WHERE MName='$name'";
     $result = mysqli_query($conn,$query);
 	$count  = mysqli_num_rows($result);
     if($count==0){
@@ -24,14 +23,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     else{
         if($newq == 0){
-            $query="DELETE FROM seller_medicines WHERE MName='$name'";
+            $query="DELETE FROM medicine_inventory WHERE MName='$name'";
             $result = mysqli_query($conn,$query);
             if(mysqli_affected_rows($conn)==1){
                 $correct_mess="Medicine Details has been updated";
             }
         }
         else{
-        $query="UPDATE seller_medicines SET Mquantity='$newq',PPQ='$newppq' WHERE Mname='$name'";
+        $query="UPDATE medicine_inventory SET MQUANTITY='$newq',PPQ='$newppq' WHERE MNAME='$name'";
         $result = mysqli_query($conn,$query);
         if(mysqli_affected_rows($conn)==1){
             $correct_mess="Medicine Details has been updated";
@@ -42,6 +41,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -146,17 +146,23 @@ transition: 1s;
     <a class="ui item">
     <h2><i class="shopping cart icon" size="big"></i>MedKart</h2></a>
     <div class="right menu">
-      <a href="seller.php" class="ui item">
+        <a href="adminhome.php" class="ui item">
         <h4>Home</h4>
         </a>
-        <a href="newmed.php" class="ui item">
-        <h4>New Stock</h4>
+        <a href="medicine.php" class="ui item">
+        <h4>View Inventory</h4>
         </a>
-        <a href="sellerpen.php" class="ui item">
+        <a href="setprice.php" class="ui item">
+        <h4>Set Price</h4>
+        </a>
+        <a href="buymed.php" class="ui item">
+        <h4>Buy Medicines</h4>
+        </a>
+        <a href="adminbuyer.php" class="ui item">
         <h4>Approve Orders</h4>
         </a>
-        <a href="editstock.php" class="ui item">
-        <h4>Edit Stock</h4>
+        <a href="editadm.php" class="ui item">
+        <h4>Edit Medicine Stock</h4>
         </a>
         <a href="logout.php" class="ui item">
         <h4>Logout</h4>

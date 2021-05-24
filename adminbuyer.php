@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SELLER</title>
+  <title>Admin</title>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width, initial-scale=1.0">
@@ -80,7 +80,7 @@ transition: 1s;
   opacity: 1;
 }
 .ui.card{
-  margin:10%;
+  margin:8%;
 }
 .ui.fluid.button{
   margin:5%;
@@ -89,7 +89,7 @@ transition: 1s;
   width: 20% !important;;
 }
 th,td{
-  max-width:80px;
+  max-width:120px;
   text-align:center !important;
 }
 .sell_head{
@@ -103,29 +103,36 @@ th,td{
   </style>
 </head>
 <body>
-<div class="ui secondary menu navbar" style="padding:3px; background-color:white;">
+  <div class="ui secondary menu navbar" style="padding:3px; background-color:white;">
 
     <a class="ui item">
     <h2><i class="shopping cart icon" size="big"></i>MedKart</h2></a>
     <div class="right menu">
-      <a href="seller.php" class="ui item">
+        <a href="adminhome.php" class="ui item">
         <h4>Home</h4>
         </a>
-        <a href="newmed.php" class="ui item">
-        <h4>New Stock</h4>
+        <a href="medicine.php" class="ui item">
+        <h4>View Inventory</h4>
         </a>
-        <a href="sellerpen.php" class="ui item">
+        <a href="setprice.php" class="ui item">
+        <h4>Set Price</h4>
+        </a>
+        <a href="buymed.php" class="ui item">
+        <h4>Buy Medicines</h4>
+        </a>
+        <a href="adminbuyer.php" class="ui item">
         <h4>Approve Orders</h4>
         </a>
-        <a href="editstock.php" class="ui item">
-        <h4>Edit Stock</h4>
+        <a href="editadm.php" class="ui item">
+        <h4>Edit Medicine Stock</h4>
         </a>
         <a href="logout.php" class="ui item">
         <h4>Logout</h4>
         </a>
     </div>
 </div>
-<h1 class="sell_head">Seller Medicine Details</h1>
+<h1 class="sell_head">Medicine Details</h1>
+<hr  style="width:75%;">
 <div class="ui centered container">
   <div class="card">
 <?php
@@ -140,75 +147,72 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sessEmail = $_SESSION["user_email"];
-$query1 = "SELECT * FROM seller WHERE Seller_Email='$sessEmail'";
-  $result = mysqli_query($conn,$query1);
-	$count  = mysqli_num_rows($result);
-  if($count==0){
-    $verify_err_mess="Invalid Email / Password";
-  }
-  else{
-    while($row = $result->fetch_assoc()) {
-      $tableId =  $row["Seller_ID"];
-      $name = $row["Seller_Name"];
-  }
-  $_SESSION["user_id"] = $tableId;
-  $_SESSION["user_name"] = $name;
-  // echo "$tableId";
-  $query2 = "SELECT * FROM seller_medicines WHERE S_ID='$tableId'";
-  $result = mysqli_query($conn, $query2);
-  $count = 1;
-  echo "
-    <table class='ui celled table'>
-      <thead>
-        <tr>
-          <th>SNO</th>
-          <th>MEDICINE</th>
-          <th>MEDICINE STOCK</th>
-          <th>PRICE PER QUANTITY</th>
-        </tr>
-      </thead>
-      <tbody>
-     ";
-     while($row = mysqli_fetch_array($result)){
-      echo "
-        <tr>
-          <td>" . $count . "</td>
-          <td>" . $row['Mname'] . "</td>
-          <td>" . $row['Mquantity'] . "</td>
-          <td>" . $row['PPQ'] . "</td>
-        </tr>";
-        $count++;
-  }
+$query2 = "SELECT * FROM temp_sale_order1";
+$result = mysqli_query($conn, $query2);
+$count = mysqli_num_rows($result);
+if($count == 0){
+    echo "<h1 style='text-align:center; color:white;'>No Requests are there currently</h1>";
+}
+else{
+$sno = 1;
+$buy='CONFIRM';
 echo "
-  </tbody>
+<table class='ui celled table'>
+    <thead>
+    <tr>
+        <th>SNO</th>
+        <th>SALE REQUEST NO</th>
+        <th>BUYER NAME</th>
+        <th>BUYER CONTACT</th>
+        <th>BUYER ADDRESS</th>
+        <th>MEDICINE NAME</th>
+        <th>QUANTITY</th>
+        <th>PPQ</th>
+        <th>PAYMODE</th>
+        <th>TOTAL AMOUNT</th>
+        <th>REQUEST</th>
+        <th>CONFIRM</th>
+    </tr>
+    </thead>
+    <tbody>
+    ";
+    while($row = mysqli_fetch_array($result)){
+    echo "
+    <tr>
+    <form method='post' action='adminconfirm.php?MName=".$row['MEDICINE']."&&BName=".$row['BNAME']."&&MQ=".$row['QUANTITY']."&&PAYMODE=".$row['PAYMODE']."'>
+        <td>" . $sno . "</td>
+        <td>" . $row['SONO'] . "</td>
+        <td>" . $row['BNAME'] . "</td>
+        <td>" . $row['BCONTACT'] . "</td>
+        <td>" . $row['BADDRESS'] . "</td>
+        <td>" . $row['MEDICINE'] . "</td>
+        <td>" . $row['QUANTITY'] . "</td>
+        <td>" . $row['PPQ'] . "</td>
+        <td>" . $row['PAYMODE'] . "</td>
+        <td>" . $row['TOTAMOUNT'] . "</td>
+        <td><div class='field' >
+        <select  class='ui dropdown' name='request' style='width:100px;'>
+        <option value=''>ACCEPT/REJECT</option>
+        <option value='A'>ACCEPT</option>
+        <option value='R'>REJECT</option>
+        </select>
+        </div>
+        </td>
+        <td><button class='ui secondary button' type='submit' name='submit'>
+        ".$buy."
+      </button></td>
+      </form>
+    </tr>";
+    $sno++;
+    }
+echo "
+</tbody>
 </table>";
 }
 $conn->close();
 ?>
 </div>
- <button class="ui fluid button">
-    <a href="newmed.php" style="color:#37414b;">Add New Medicine</a>
-  </button>
 </div>
-<?php
-        if(!empty($verify_err_mess)){
-            echo '<div class="ui negative message" id="errorMsg" style="width:85%;">
-            <i class="close icon" onclick="closeDiv1()"></i>
-            <div class="header">
-              '.$verify_err_mess.'
-            </div>
-            <p>Medicine Details Not Added</p></div>';
-        }
-  ?>
 </div>
-<script>
-  function closeDiv1(){
-    document.getElementById('errorMsg').style.display='None';
-  }
-  function closeDiv2(){
-    document.getElementById('corrMsg').style.display='None';
-  }
-</script>
 </body>
 </html>
