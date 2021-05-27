@@ -84,9 +84,7 @@ transition: 1s;
 }
 .ui.fluid.button{
   margin:5%;
-  margin-left:auto;
-  margin-right:auto;
-  width: 20% !important;;
+  width: 25% !important;
 }
 th,td{
   max-width:80px;
@@ -108,27 +106,12 @@ th,td{
     <a class="ui item">
     <h2><i class="shopping cart icon" size="big"></i>MedKart</h2></a>
     <div class="right menu">
-      <a href="/admindashboard.php" class="ui item">
-      <h4>Home</h4>
-      </a>
-      <!-- <a href="/admin.php" class="ui item">
-      <h4>View Inventory</h4>
-      </a>
-      <a href="setprice.php" class="ui item">
-      <h4>Set Price</h4>
-      </a>
-      <a href="buymed.php" class="ui item">
-      <h4>Buy Medicines</h4>
-      </a>
-      <a href="" class="ui item">
-      <h4>Approve Orders</h4>
-      </a>   
-      <a href="editadm.php" class="ui item">
-      <h4>Edit Medicine Stock</h4>
-      </a> -->
-      <a href="logout.php" class="ui item">
-      <h4>Logout</h4>
-      </a>
+        <a href="/admindashboard.php" class="ui item">
+        <h4>Home</h4>
+        </a>
+        <a href="logout.php" class="ui item">
+        <h4>Logout</h4>
+        </a>
     </div>
 </div>
 <h1 class="sell_head">Medicine Details</h1>
@@ -149,17 +132,21 @@ if ($conn->connect_error) {
 $query2 = "SELECT * FROM medicine_inventory";
 $result = mysqli_query($conn, $query2);
 $count = mysqli_num_rows($result);
-$sno = 1;
-$c = 0;
-while($row = mysqli_fetch_array($result)){
-  if($row['PPQ']==NULL){
-    $c++;
-  }
-}
-if($c==0){
-    echo "<h1 style='text-align:center; color:white;'>No Medicine Order Accepted</h1>";
+if($count == 0){
+  echo "<h1 style='text-align:center; color:white;'>No Medicine stock currently</h1>";
 }
 else{
+// $c=0;
+// while($row = mysqli_fetch_array($result)){
+//   if($row['PPQ']!=NULL){
+//     $c++;
+//   }
+// }
+// if($c==0){
+//   echo "<h1 style='text-align:center; color:white;'>No Medicine stock currently</h1>";
+// }
+// else{
+$sno = 1;
 echo "
 <table class='ui celled table'>
     <thead>
@@ -168,35 +155,42 @@ echo "
         <th>MEDICINE ID</th>
         <th>MEDICINE NAME</th>
         <th>MEDICINE STOCK</th>
-        <th>ENTER PRICE PER QUANTITY</th>
-        <th>ACCEPT</th>
+        <th>PRICE PER QUANTITY</th>
     </tr>
     </thead>
     <tbody>
     ";
     while($row = mysqli_fetch_array($result)){
     if($row['PPQ']==NULL){
+    }
+    else{
     echo "
     <tr>
-    <form method='post' action='price.php?MID=".$row['MID']."'>
-        <td>".$sno."</td>
-        <td>".$row['MID']."</td>
-        <td>".$row['MName']."</td>
-        <td>".$row['MQuantity']."</td>
-        <td><input style='width:70%;' min=0 type='number' placeholder='Enter PPQ' name='ppq' required></td>
-      <td><button class='ui secondary button' type='submit'>Accept</td>
-    </form>    
+        <td>" . $sno . "</td>
+        <td>" . $row['MID'] . "</td>
+        <td>" . $row['MName'] . "</td>
+        <td>" . $row['MQuantity'] . "</td>
+        <td>" . $row['PPQ'] . "</td>
     </tr>";
     $sno++;
     }
   }
 echo "
 </tbody>
-</table>"; 
-}
+</table>";
+// }  
+} 
 $conn->close();
 ?>
 </div>
+<div style="display:flex; justify-content:space-evenly;">
+ <button class="ui fluid button">
+    <a href="buymed.php" style="color:#37414b;">Buy New Medicine</a>
+  </button>
+ <button class="ui fluid button">
+    <a href="editadm.php" style="color:#37414b;">Edit Medicine Stock</a>
+  </button>
+  </div>
 </div>
 </div> 
 </body>

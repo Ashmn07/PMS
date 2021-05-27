@@ -1,6 +1,6 @@
 <?php
 session_start();
-$servername = "localhost:3307";
+$servername = "localhost:3306";
 $username = "root";
 $password = "";
 $dbname = "pms";
@@ -146,34 +146,34 @@ transition: 1s;
     <a class="ui item">
     <h2><i class="shopping cart icon" size="big"></i>MedKart</h2></a>
     <div class="right menu">
-        <a href="adminhome.php" class="ui item">
-        <h4>Home</h4>
-        </a>
-        <a href="medicine.php" class="ui item">
-        <h4>View Inventory</h4>
-        </a>
-        <a href="setprice.php" class="ui item">
-        <h4>Set Price</h4>
-        </a>
-        <a href="buymed.php" class="ui item">
-        <h4>Buy Medicines</h4>
-        </a>
-        <a href="adminbuyer.php" class="ui item">
-        <h4>Approve Orders</h4>
-        </a>
-        <a href="editadm.php" class="ui item">
-        <h4>Edit Medicine Stock</h4>
-        </a>
-        <a href="logout.php" class="ui item">
-        <h4>Logout</h4>
-        </a>
+      <a href="/admindashboard.php" class="ui item">
+      <h4>Home</h4>
+      </a>
+      <!-- <a href="/admin.php" class="ui item">
+      <h4>View Inventory</h4>
+      </a>
+      <a href="setprice.php" class="ui item">
+      <h4>Set Price</h4>
+      </a>
+      <a href="buymed.php" class="ui item">
+      <h4>Buy Medicines</h4>
+      </a>
+      <a href="" class="ui item">
+      <h4>Approve Orders</h4>
+      </a>   
+      <a href="editadm.php" class="ui item">
+      <h4>Edit Medicine Stock</h4>
+      </a> -->
+      <a href="logout.php" class="ui item">
+      <h4>Logout</h4>
+      </a>
     </div>
 </div>
 <div class="ui centered grid container" style="margin:20px;">
     <div class="nine wide column">
       <div class="ui fluid card">
         <div class="content">
-        <?php
+        <?php 
         if(!empty($verify_err_mess)){
             echo '<div class="ui negative message" id="errorMsg" style="width:85%;">
             <i class="close icon" onclick="closeDiv1()"></i>
@@ -181,12 +181,12 @@ transition: 1s;
               '.$verify_err_mess.'
             </div>
             <p>Medicine Details Not Updated</p></div>';
-        }
+        }        
         if(!empty($correct_mess)){
             echo '<div class="ui positive message" id="corrMsg" style="width:85%;">
             <i class="close icon" onclick="closeDiv2()"></i>
             <div class="header">'.$correct_mess.'</div></div>';
-        }
+        }        
         ?>
         <form class="ui large form" action="" method="post">
           <h2 class="ui center aligned icon header">
@@ -195,7 +195,18 @@ transition: 1s;
           </h2>
           <div class="field">
             <label for="stock"><b>Medicine Name</b></label>
-            <input type="text" placeholder="Enter Medicine Name" name="mn" required>
+            <?php
+            $q1 = "SELECT * FROM medicine_inventory";
+            $result = mysqli_query($conn,$q1);
+            echo "  
+            <select name='mn' class='ui dropdown'>
+            <option value='' >Select Medicine</option>
+            ";
+            while ($row = mysqli_fetch_array($result)){
+              echo " <option value='".$row['MName']."'>".$row['MName']."</option>";
+            }
+            echo "</select>";
+            ?>
           </div>
           <div class="field">
             <label for="quantity"><b>New Quantity</b><span style="font-size:1rem; font-weight:400;">(Enter 0 To Delete)</span></label>
